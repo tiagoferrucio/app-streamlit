@@ -3,7 +3,7 @@ from utils import chatbot, text
 from streamlit_chat import message
 
 def main():
-    st.set_page_config(page_title='ChatPDF - PS', page_icon=':books:')
+    st.set_page_config(page_title='TalktoPDF - PS', page_icon=':books:')
 
     st.header('Converse com seus arquivos :paperclip:', divider="gray")
 
