@@ -75,7 +75,7 @@ def create_conversation_chain(user_question, vectorstore):
         combine_docs_chain_kwargs=chain_type_kwargs
     )   
 
-    response  = conversation_chain({"question": user_question})
+    response  = conversation_chain.invoke({"question": user_question})
     #response = (prompt | llm).invoke({"context": context, "user_question": user_question})
 
     return(response.get("answer"))
