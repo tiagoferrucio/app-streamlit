@@ -7,6 +7,7 @@ from langchain_community.embeddings import OCIGenAIEmbeddings
 from langchain_community.chat_models.oci_generative_ai import ChatOCIGenAI
 from langchain_community.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.schema.runnable import RunnablePassthrough
@@ -40,31 +41,41 @@ def create_vectorstore(chunks,config):
 def create_conversation_chain(user_question, vectorstore):
     config = text.load_oci_config()
 
-    llm = load_llm(config)
-
     ##retriever = vectorstore.as_retriever()
-    result = vectorstore.similarity_search_with_score(user_question, k=30)
-    context = ' '.join([res[0].page_content for res in result])
+    #result = vectorstore.similarity_search_with_score(user_question, k=30)
+    #context = ' '.join([res[0].page_content for res in result])
 
-    template = '''
-    Você é um acessor juridico e precisa ajudar o time de vendas exclarecendo algumas dúvidas;
-
+    template = """
+    Você é um chatbot projetado para auxiliar os usuários.
     Responda em português;
     Use palavras que sua audiência vai entender;
     Siga um estilo para o seu texto; Evite palavras desnecessárias; Não seja redundante;
     Prefira discurso direto; Organize a informação por ordem de importância e uso;
-    Caso não saiba, não invente, diga que não sabe
-    Responda somente baseado no contexto abaixo;
+    Se o texto não contiver a resposta, responder que a resposta não está disponível.
+    Mantenha as respostas precisas para a pergunta
+    Responda apenas às perguntas com base no contexto fornecido abaixo:
 
     contexto: {context}
     
-    Pergunta: {user_question};
-    '''
+    Pergunta: {question};
+    """
     prompt = PromptTemplate(
         input_variables=["context", "user_question"],
         template=template
     )
+    chain_type_kwargs = {"prompt" : prompt}
 
-    response = (prompt | llm).invoke({"context": context, "user_question": user_question})
+    llm = load_llm(config)
+    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
 
-    return response.content
+    conversation_chain = ConversationalRetrievalChain.from_llm(
+        llm = llm,
+        retriever= vectorstore.as_retriever(),
+        memory = memory,
+        combine_docs_chain_kwargs=chain_type_kwargs
+    )   
+
+    response  = conversation_chain({"question": user_question})
+    #response = (prompt | llm).invoke({"context": context, "user_question": user_question})
+
+    return(response.get("answer"))
