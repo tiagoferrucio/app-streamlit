@@ -14,10 +14,10 @@ from langchain.schema.output_parser import StrOutputParser
 
 def load_llm(config):
     chat_model = ChatOCIGenAI(
-        model_id="cohere.command-r-16k", ## - cohere.command-r-plus, cohere.command-r-16k
+        model_id="cohere.command-r-plus", ## - cohere.command-r-plus, cohere.command-r-16k
         service_endpoint="https://inference.generativeai.sa-saopaulo-1.oci.oraclecloud.com",
         compartment_id='ocid1.compartment.oc1..aaaaaaaa7ni42qbrptng34mhf7i3e23lmxes734ovsggllryxrofxkgk6gda',
-        model_kwargs={"temperature": 0.7, "max_tokens": 2000},
+        model_kwargs={"temperature": 0.5 "max_tokens": 2000},
     )
     
     return chat_model
