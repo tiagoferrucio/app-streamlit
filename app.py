@@ -50,15 +50,27 @@ def main():
         st.subheader('Seus arquivos')
         pdf_docs = st.file_uploader("Carregue os seus arquivos em formato pdf", accept_multiple_files=True)
 
-        if st.button('Processar'):
-            config = text.load_oci_config()
-            all_files_text = text.read_pdf(pdf_docs)
-            pdf_chunk = [chunk for chunk in text.text_chunk(all_files_text) if chunk.strip()]
+        # Verifica se o botão "Processar" foi clicado
+        processar_clicked = st.button('Processar')
 
-            # Cria o vectorstore e armazena na sessão
-            vectorstore = chatbot.create_vectorstore(pdf_chunk, config)
-            st.session_state.vectorstore = vectorstore
-            st.success('Arquivos processados com sucesso! Agora você pode fazer perguntas.')
+        if processar_clicked:
+            if pdf_docs:
+                # Verifica se todos os arquivos são PDFs
+                non_pdf_files = [file for file in pdf_docs if not file.name.endswith('.pdf')]
+
+                if non_pdf_files:
+                    st.warning(f"Alguns arquivos não são PDFs: {', '.join([file.name for file in non_pdf_files])}. Por favor, envie apenas PDFs.")
+                else:
+                    config = text.load_oci_config()
+                    all_files_text = text.read_pdf(pdf_docs)
+                    pdf_chunk = [chunk for chunk in text.text_chunk(all_files_text) if chunk.strip()]
+
+                    # Cria o vectorstore e armazena na sessão
+                    vectorstore = chatbot.create_vectorstore(pdf_chunk, config)
+                    st.session_state.vectorstore = vectorstore
+                    st.success('Arquivos processados com sucesso! Agora você pode fazer perguntas.')
+            else:
+                st.warning("Nenhum arquivo foi enviado. Por favor, envie ao menos um arquivo PDF.")
 
 if __name__ == '__main__':
     main()
