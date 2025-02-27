@@ -46,4 +46,6 @@ python3 -m streamlit run app.py
 #Permanent running
 nohup python3 -m streamlit run app.py
 ```
-Note: Streamlit runs on this port: 8501
+Note 01: Streamlit runs on this port: 8501
+Note 02: Update the compartment_id in chatbot.py file - https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/contactingsupport_topic-Locating_Oracle_Cloud_Infrastructure_IDs.htm#Finding_the_OCID_of_a_Compartment
+Note 03: Create a config file in ~/.oci/config - https://medium.com/a-guide-to-oracle-cloud-ai/create-a-config-file-for-oracle-date-a-science-1bf91e1a76e6
