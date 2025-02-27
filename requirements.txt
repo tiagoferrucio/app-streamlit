@@ -1,8 +1,0 @@
-streamlit
-oci
-ads
-PyPDF2
-faiss-cpu
-langchain_community
-streamlit-chat
-langchain

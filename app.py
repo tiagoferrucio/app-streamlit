@@ -4,6 +4,11 @@ from streamlit_chat import message
 
 def main():
     st.set_page_config(page_title='TalktoPDF - PS', page_icon=':books:')
+    col1, col2 = st.columns(2)
+
+    with col1:
+        modelos_disponiveis = ['Llama 3.3 70B', 'Llama 3.1 70B','Cohere Command-R','Cohere Command-R Plus']
+        modelo_escolhido = st.selectbox("Escolha o modelo LLM", modelos_disponiveis)
 
     st.header('Converse com seus arquivos :paperclip:', divider="gray")
 
@@ -29,7 +34,7 @@ def main():
         # Gera a resposta do assistente
         if st.session_state.vectorstore is not None:
             vectorstore = st.session_state.vectorstore
-            response = chatbot.create_conversation_chain(user_question, vectorstore)
+            response = chatbot.create_conversation_chain(user_question, vectorstore, modelo_escolhido)
 
             # Adiciona a resposta do assistente ao histórico
             st.session_state.messages.append({"role": "assistant", "content": response})
