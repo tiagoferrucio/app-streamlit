@@ -15,7 +15,7 @@ from langchain.schema.output_parser import StrOutputParser
 
 def load_llm(config):
     chat_model = ChatOCIGenAI(
-        model_id="cohere.command-r-plus", ## - cohere.command-r-plus, cohere.command-r-16k
+        model_id="meta.llama-3.3-70b-instruct", ## - cohere.command-r-plus, cohere.command-r-16k
         service_endpoint="https://inference.generativeai.sa-saopaulo-1.oci.oraclecloud.com",
         compartment_id='ocid1.compartment.oc1..aaaaaaaa7ni42qbrptng34mhf7i3e23lmxes734ovsggllryxrofxkgk6gda',
         model_kwargs={"temperature": 0.5, "max_tokens": 2000},
@@ -46,11 +46,12 @@ def create_conversation_chain(user_question, vectorstore):
     #context = ' '.join([res[0].page_content for res in result])
 
     template = """
-    Você é um chatbot projetado para auxiliar os usuários.
+    Você é um chatbot projetado para auxiliar os usuários a tirar dúvidas sobre documentos.
     Responda em português;
     Use palavras que sua audiência vai entender;
     Siga um estilo para o seu texto; Evite palavras desnecessárias; Não seja redundante;
     Prefira discurso direto; Organize a informação por ordem de importância e uso;
+    Use marcadores para organizar melhor as respostas ou listas quando necessário;
     Se o texto não contiver a resposta, responder que a resposta não está disponível.
     Mantenha as respostas precisas para a pergunta
     Responda apenas às perguntas com base no contexto fornecido abaixo:
